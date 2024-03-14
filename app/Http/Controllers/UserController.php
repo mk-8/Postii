@@ -137,6 +137,9 @@ class UserController extends Controller
                     $query->selectRaw('(6371 * acos(cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + sin(radians(?)) * sin(radians(latitude)))) AS distance', [$userLat, $userLong, $userLat])
                         ->having('distance', '<', 300);
                 })
+                ->whereDoesntHave('user.followers', function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                })
                 ->where('user_id', '!=', auth()->id())
                 ->get();
 
@@ -146,7 +149,10 @@ class UserController extends Controller
             $postsGreater2000km = Post::whereHas('geolocation', function ($query) use ($userLat, $userLong) {
                 $query->selectRaw('(6371 * acos(cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + sin(radians(?)) * sin(radians(latitude)))) AS distance', [$userLat, $userLong, $userLat])
                     ->having('distance', '>', 2000);
-            })
+                })
+                ->whereDoesntHave('user.followers', function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                })
             ->where('user_id', '!=', auth()->id())
             ->get();
 
