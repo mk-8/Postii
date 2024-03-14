@@ -3,6 +3,7 @@
 use App\Events\ChatMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FollowController;
@@ -42,6 +43,12 @@ Route::delete('/post/{post}', [PostController::class, 'delete'])->middleware('ca
 Route::get('/post/{post}/edit', [PostController::class, 'showEditForm'])->middleware('can:update,post');
 Route::put('/post/{post}', [PostController::class, 'actuallyUpdate'])->middleware('can:update,post');
 Route::get('/search/{term}', [PostController::class , 'search']);
+
+//like related routes
+Route::post('/like', [LikeController::class, 'like'])->middleware('auth');
+Route::get('/like/count/{postId}', [LikeController::class, 'getLikeCount']);
+
+
 
 //Profile related routes
 Route::get('/profile/{user:username}',[UserController::class, 'profile']);

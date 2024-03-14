@@ -66,4 +66,12 @@ class User extends Authenticatable
     public function feedPosts(){
         return $this->hasManyThrough(Post::class, Follow::class, 'user_id', 'user_id', 'id', 'followeduser');
     }
+
+    public function likes(){
+        return $this->hasMany(Like::class);
+    }
+
+    public function geolocation(){
+        return $this->hasOne(Geolocation::class);
+    }
 }

@@ -11,13 +11,21 @@ use App\Models\Follow;
 use Illuminate\Http\Request;
 use App\Events\OurExampleEvent;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
+use Stevebauman\Location\Facades\Location;
 
 class UserController extends Controller
 {
+
+    public function getIP() {
+        $clientIP = request()->ip();
+        return $clientIP;
+    }
+
     public function register(Request $request){
         $incomingFields = $request->validate([     //perform validation on all the data coming from the form
             'username' => ['required','min:3', 'max:20', Rule::unique('users','username')],  //('tableName', 'field')
@@ -41,6 +49,50 @@ class UserController extends Controller
         {
             $request->session()->regenerate(); //manually regenerate the session ID
             event(new OurExampleEvent(['username' => auth()->user()->username, 'action' => 'login']));
+            
+            $user = Auth::user();
+            // $user->IP = $this->getIP();
+            $user->IP = '117.97.174.167';
+            
+            // $ip = $this->getIP();
+            $ip = '117.97.174.167';
+            $position = Location::get($ip);
+            $user->latitude = $position->latitude;
+            $user->longitude = $position->longitude;
+
+            $user->save();
+
+            // dd($user->IP,$user->latitude, $user->longitude );
+
+            // $position = Location::get($ip);
+            // $lat1 = $position->latitude;
+            // $lon1 = $position->longitude;
+
+            // $position1 = Location::get('117.247.52.179');
+            // $lat2 = $position1->latitude;
+            // $lon2 = $position1->longitude;
+            // dd($position1);
+            // dd($lat1,$lon1,$lat2,$lon2);
+
+            // ---------------------
+            // $earthRadius = 6371;
+
+            // $lat1 = deg2rad($lat1);
+            // $lon1 = deg2rad($lon1);
+            // $lat2 = deg2rad($lat2);
+            // $lon2 = deg2rad($lon2);
+
+            // $deltaLat = $lat2 - $lat1;
+            // $deltaLon = $lon2 - $lon1;
+            // $a = sin($deltaLat / 2) * sin($deltaLat / 2) +
+            //     cos($lat1) * cos($lat2) * sin($deltaLon / 2) * sin($deltaLon / 2);
+            // $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+            // $distance = $earthRadius * $c;
+
+            // dd($distance); 
+
+            // ---------------------
+            
             return redirect('/')->with('success','You have successfully logged in.'); //redirect here with the message
         }
         else
@@ -54,18 +106,59 @@ class UserController extends Controller
         return redirect('/')->with('success','You have successfully logged out.');
     }
 
-    public function showCorrectHomepage(){
+    // public function showCorrectHomepage(){
 
-        if (auth()->check()){
-            return view('homepage-feed', ['posts' => auth()->user()->feedPosts()->latest()->paginate(4)]);
-        }
+    //     if (auth()->check()){
+    //         return view('homepage-feed', ['posts' => auth()->user()->feedPosts()->latest()->paginate(4)]);
+    //     }
 
-        else {
-            $postCount = Cache::remember('postCount', 20, function (){
+    //     else {
+    //         $postCount = Cache::remember('postCount', 20, function (){
+    //             sleep(5);
+    //             return Post::count();
+    //         });
+    //         return view('homepage', ['postCount' => $postCount]);
+    //     }
+    // }
+
+    public function showCorrectHomepage() {
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            // Retrieve latest posts from users the current user follows
+            $followingPosts = $user->feedPosts()->latest()->paginate(4);
+
+            // Retrieve the user's latitude and longitude
+            $userLat = $user->latitude;
+            $userLong = $user->longitude;
+
+            // Retrieve posts from users within 300km
+            $postsWithin300km = Post::whereHas('geolocation', function ($query) use ($userLat, $userLong) {
+                    $query->selectRaw('(6371 * acos(cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + sin(radians(?)) * sin(radians(latitude)))) AS distance', [$userLat, $userLong, $userLat])
+                        ->having('distance', '<', 300);
+                })
+                ->where('user_id', '!=', auth()->id())
+                ->get();
+
+            $userLat = $user->latitude;
+            $userLong = $user->longitude;
+            
+            $postsGreater2000km = Post::whereHas('geolocation', function ($query) use ($userLat, $userLong) {
+                $query->selectRaw('(6371 * acos(cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + sin(radians(?)) * sin(radians(latitude)))) AS distance', [$userLat, $userLong, $userLat])
+                    ->having('distance', '>', 2000);
+            })
+            ->where('user_id', '!=', auth()->id())
+            ->get();
+
+
+            return view('homepage-feed', compact('followingPosts', 'postsWithin300km', 'postsGreater2000km'));
+        } else {
+            $postCount = Cache::remember('postCount', 20, function () {
                 sleep(5);
                 return Post::count();
             });
-            return view('homepage', ['postCount' => $postCount]);
+
+            return view('homepage', compact('postCount'));
         }
     }
 

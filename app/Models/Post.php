@@ -26,4 +26,18 @@ class Post extends Model
             'body' => $this->body
         ];
     }
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
+
+    public function isLikedByUser($userId)
+    {
+        return $this->likes()->where('user_id', $userId)->exists();
+    }
+
+    public function geolocation(){
+        return $this->hasOne(Geolocation::class);
+    }
 }

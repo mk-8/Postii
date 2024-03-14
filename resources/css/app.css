@@ -59,6 +59,42 @@ body,
   margin-bottom: 1.75rem;
 }
 
+
+.like-section {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.like-count {
+    font-size: 0.9rem;
+    color: #666;
+    margin-right: 0.5rem;
+}
+
+.like-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.25rem;
+    background-color: #e2e8f0;
+    color: #4a5568;
+    font-weight: 500;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.like-btn:hover {
+    background-color: #cbd5e0;
+}
+
+.like-btn i {
+    margin-right: 0.5rem;
+}
+
+.like-btn .liked {
+    color: #e53e3e;
+}
+
 /* .input-dark {
   background-color: #444;
   border-color: transparent;
