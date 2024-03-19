@@ -8,12 +8,18 @@ use App\Models\Post;
 use App\Models\User;
 // use Intervention\Image\Image;
 use App\Models\Follow;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Events\OurExampleEvent;
 use Illuminate\Validation\Rule;
+use App\Mail\ForgotPasswordMail;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
 use Stevebauman\Location\Facades\Location;
@@ -126,7 +132,7 @@ class UserController extends Controller
             $user = Auth::user();
 
             // Retrieve latest posts from users the current user follows
-            $followingPosts = $user->feedPosts()->latest()->paginate(4);
+            $followingPosts = $user->feedPosts()->latest()->paginate(8);
 
             // Retrieve the user's latitude and longitude
             $userLat = $user->latitude;
@@ -237,6 +243,71 @@ class UserController extends Controller
         }
 
         return back()->with('success' ,'Congratulations on the new avatar!');
+    }
+
+    public function showforgotPassword(){
+        return view('forgot-password');
+    }
+
+    public function forgotPassword(Request $request){
+
+        $incomingFields = $request->validate([
+            'email' => ['required','email']
+        ]);
+
+        $password = Str::password(8,true,true,true,false);
+
+
+        if($incomingFields['email'] == DB::Table('users')->where('email', '=', $incomingFields['email'])->value('email')){
+            $newPassword = $password;
+            DB::table('users')
+                ->where('email', $incomingFields['email'])
+                ->update(['password' => bcrypt($newPassword)]);    
+            Session::flash('success', 'Email sent!'); 
+            Mail::to($incomingFields['email'])->send(new ForgotPasswordMail([
+                'password' => $newPassword,
+            ]));
+            return back();
+        }
+        else{
+            return back()->with('failure', 'Incorrect email!');
+        }
+
+    }
+
+    public function showresetPassword(){
+        return view('reset-password');
+    }
+
+    public function resetPassword(Request $request){
+        $incomingFields = $request->validate([     
+            'email' => ['required', 'email'],
+            'oldPassword' => ['required'],
+            'password' => ['required','confirmed'],
+            'password_confirmation' => 'required'
+        ]);
+
+        if($incomingFields['email'] == DB::Table('users')
+            ->where('email', '=', $incomingFields['email'])->value('email') 
+            && 
+            Hash::check($incomingFields['oldPassword'], 
+            DB::table('users')->where('email', $incomingFields['email'])
+            ->value('password')))
+        {
+            
+            DB::table('users')
+                ->where('email', $incomingFields['email'])
+                ->update(['password' => bcrypt($incomingFields['password'])]);
+            return redirect('/')->with('success', 'Password changed successfully');
+
+        }
+
+        else{
+            return back()->with('failure', 'Email or Password is incorrect!');
+        }
+
+
+
     }
 
     public function loginApi(Request $request){

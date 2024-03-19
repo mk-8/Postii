@@ -7,6 +7,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FollowController;
+use App\Http\Controllers\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,7 +49,9 @@ Route::get('/search/{term}', [PostController::class , 'search']);
 Route::post('/like', [LikeController::class, 'like'])->middleware('auth');
 Route::get('/like/count/{postId}', [LikeController::class, 'getLikeCount']);
 
-
+//comment related routes
+Route::post('/usercomment', [CommentController::class, 'addComment'])->middleware('auth');
+Route::delete('/comment/{comment}', [CommentController::class, 'delete'])->middleware('auth');
 
 //Profile related routes
 Route::get('/profile/{user:username}',[UserController::class, 'profile']);
@@ -76,3 +79,9 @@ Route::post('/send-chat-message', function(Request $request){
     broadcast(new ChatMessage(['username' => auth()->user()->username, 'textvalue' => strip_tags($request->textvalue), 'avatar' => auth()->user()->avatar]))->toOthers();
     return response()->noContent();
 })->middleware('auth');
+
+//password reset routes
+Route::get('/forgotPassword', [UserController::class, 'showforgotPassword']);
+Route::post('/forgotPassword', [UserController::class, 'forgotPassword']);
+Route::get('/resetPassword', [UserController::class, 'showResetPassword']);
+Route::post('/resetPassword', [UserController::class, 'resetPassword']);

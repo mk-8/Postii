@@ -40,4 +40,10 @@ class Post extends Model
     public function geolocation(){
         return $this->hasOne(Geolocation::class);
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
 }

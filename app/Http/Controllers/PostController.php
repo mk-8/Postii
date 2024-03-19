@@ -7,6 +7,7 @@ use App\Models\Geolocation;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Jobs\SendNewPostEmail;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Stevebauman\Location\Facades\Location;
 
@@ -69,7 +70,15 @@ class PostController extends Controller
     public function viewSinglePost(Post $post){
         $ourHTML = Str::markdown($post->body);
         $post['body'] = $ourHTML; // we are usign markdown on the body of the post
-        return view('single-post', ['post' => $post]);  //get a hold of the post and pass it to the view as an associative array
+        
+        $postId = $post->id;
+        $comments = DB::table('comments')
+        ->join('users', 'comments.user_id', '=', 'users.id')
+        ->select('comments.*', 'users.username', 'users.avatar')
+        ->where('comments.post_id', '=', $postId)
+        ->get();
+
+        return view('single-post', ['post' => $post, 'comments' => $comments]);  //get a hold of the post and pass it to the view as an associative array
     }
 
     public function delete(Post $post){

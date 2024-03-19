@@ -49,6 +49,7 @@
                 <div class="col-md-auto">
                   <button class="btn btn-primary btn-sm">Sign In</button>
                 </div>
+                <a href="/forgotPassword" style="color: black">forgot password?</a> 
               </div>
             </form>
 
@@ -81,9 +82,14 @@
     {{$slot}}
 
     <!-- footer begins -->
-    <footer class="border-top text-center small text-muted py-3">
+    {{-- <footer class="border-top text-center small text-muted py-3">
       <p class="m-0">Copyright &copy; {{date('Y')}} <a href="/" class="text-muted">Postii</a>. All rights reserved.</p>
-    </footer>
+    </footer> --}}
+
+    {{-- <footer class="border-top text-center small text-muted py-3" style=" bottom: 0; width: 100%; background-color: #f8f9fa; border-top: 1px solid #e9ecef; padding: 10px 0; color: #6c757d;">
+    <p class="m-0">Copyright &copy; {{date('Y')}} <a href="/" class="text-muted">Postii</a>. All rights reserved.</p>
+    </footer> --}}
+
 
     @auth
     <div data-username="{{auth()->user()->username}}" data-avatar = "{{auth()->user()->avatar}}" id="chat-wrapper" class = "chat-wrapper shadow border-top border-left"></div>

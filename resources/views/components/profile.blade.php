@@ -4,7 +4,7 @@
         <img class="avatar-small" src="{{$sharedData['avatar']}}" /> {{$sharedData['username']}}
         @auth
         {{-- If you are not following someone, then it displays the follow button--}}
-        @if (!$sharedData['currentlyFollowing'] AND auth()->user()->id != $sharedData['username'])
+        @if (!$sharedData['currentlyFollowing'] AND auth()->user()->username != $sharedData['username'])
           <form class="ml-2 d-inline" action="/create-follow/{{$sharedData['username']}}" method="POST">
           @csrf
           <button class="btn btn-primary btn-sm">Follow <i class="fas fa-user-plus"></i></button>

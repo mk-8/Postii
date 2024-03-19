@@ -120,7 +120,7 @@
                     <!-- Like button section -->
                     <div class="like-section">
                         <span class="like-count">Likes: {{ session('likeCount') ?? $post->likes()->count() }}</span>
-                        <form action="/like" method="POST">
+                        {{-- <form action="/like" method="POST">
                             @csrf
                             <input type="hidden" name="post_id" value="{{ $post->id }}">
                             <button type="submit" class="like-btn">
@@ -130,7 +130,7 @@
                                     <i class="far fa-heart"></i>&nbsp Like
                                 @endif
                             </button>
-                        </form>
+                        </form> --}}
                     </div>
                 </div>
             @endforeach
@@ -162,17 +162,6 @@
                     <!-- Like button section -->
                     <div class="like-section">
                         <span class="like-count">Likes: {{ session('likeCount') ?? $post->likes()->count() }}</span>
-                        <form action="/like" method="POST">
-                            @csrf
-                            <input type="hidden" name="post_id" value="{{ $post->id }}">
-                            <button type="submit" class="like-btn">
-                                @if ($post->isLikedByUser(Auth::id()))
-                                    <i class="fas fa-heart liked"></i>&nbsp Dislike
-                                @else
-                                    <i class="far fa-heart"></i>&nbsp Like
-                                @endif
-                            </button>
-                        </form>
                     </div>
                 </div>
             @endforeach
@@ -196,17 +185,6 @@
                     <!-- Like button section -->
                     <div class="like-section">
                         <span class="like-count">Likes: {{ session('likeCount') ?? $post->likes()->count() }}</span>
-                        <form action="/like" method="POST">
-                            @csrf
-                            <input type="hidden" name="post_id" value="{{ $post->id }}">
-                            <button type="submit" class="like-btn">
-                                @if ($post->isLikedByUser(Auth::id()))
-                                    <i class="fas fa-heart liked"></i>&nbsp Dislike
-                                @else
-                                    <i class="far fa-heart"></i>&nbsp Like
-                                @endif
-                            </button>
-                        </form>
                     </div>
                 </div>
             @endforeach
