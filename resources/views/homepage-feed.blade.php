@@ -1,43 +1,46 @@
 <x-layout>
 	<style>
 		.like-section {
-			display: flex;
-			align-items: center;
-			margin-bottom: 1rem;
-		}
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
 
-		.like-count {
-			margin-top: 0.2rem;
-			font-size: 0.9rem;
-			color: #666;
-			margin-right: 0.5rem;
-		}
+.like-count {
+    margin-top: 0.2rem;
+    font-size: 0.9rem;
+    color: #666;
+    margin-right: 1rem;
+}
 
-		.like-btn {
-			display: inline-flex;
-			align-items: center;
-			margin-top: 0.2rem;
-			padding: 0rem 0.5rem;
-			border-radius: 0.25rem;
-			border-color: rgb(249, 214, 214);
-			background-color: #e2e8f03f;
-			color: #4a5568;
-			font-size: 0.9rem;
-			font-weight: 500;
-			transition: background-color 0.2s ease-in-out;
-		}
+.like-btn {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 0.2rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    border: none;
+    background-color: #f0f2f5;
+    color: #4a5568;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
 
-		.like-btn:hover {
-			background-color: #cbd5e0;
-		}
+.like-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
-		.like-btn i {
-			margin-right: 0.5rem;
-		}
+.like-btn i {
+    margin-right: 0.5rem;
+}
 
-		.like-btn .liked {
-			color: #e53e3e;
-		}
+.like-btn .liked {
+    color: #e53e3e;
+}
+
 	</style>
 
 	<script>
@@ -120,18 +123,22 @@
                     <!-- Like button section -->
                     <div class="like-section">
                         <span class="like-count">Likes: {{ session('likeCount') ?? $post->likes()->count() }}</span>
-                        {{-- <form action="/like" method="POST">
-                            @csrf
-                            <input type="hidden" name="post_id" value="{{ $post->id }}">
-                            <button type="submit" class="like-btn">
-                                @if ($post->isLikedByUser(Auth::id()))
-                                    <i class="fas fa-heart liked"></i>&nbsp Dislike
-                                @else
-                                    <i class="far fa-heart"></i>&nbsp Like
-                                @endif
-                            </button>
-                        </form> --}}
+                        <span class="like-count">Comments: {{ session('likeCount') ?? $post->comments()->count() }}</span>
                     </div>
+                    {{-- <form action="/like" method="POST">
+                        @csrf
+                        <input type="hidden" name="post_id" value="{{ $post->id }}">
+                        <button type="submit" class="like-btn">
+                            @if ($post->isLikedByUser(Auth::id()))
+                                <i class="fas fa-heart liked"></i>&nbsp Dislike
+                            @else
+                                <i class="far fa-heart"></i>&nbsp Like
+                            @endif
+                        </button>
+                    </form> --}}
+                    
+                    
+
                 </div>
             @endforeach
         </div>
@@ -162,6 +169,7 @@
                     <!-- Like button section -->
                     <div class="like-section">
                         <span class="like-count">Likes: {{ session('likeCount') ?? $post->likes()->count() }}</span>
+                        <span class="like-count">Comments: {{ session('likeCount') ?? $post->comments()->count() }}</span>
                     </div>
                 </div>
             @endforeach
@@ -185,6 +193,7 @@
                     <!-- Like button section -->
                     <div class="like-section">
                         <span class="like-count">Likes: {{ session('likeCount') ?? $post->likes()->count() }}</span>
+                        <span class="like-count">Comments: {{ session('likeCount') ?? $post->comments()->count() }}</span>
                     </div>
                 </div>
             @endforeach

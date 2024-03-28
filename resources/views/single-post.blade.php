@@ -40,31 +40,23 @@
         }   
 
         .like-btn {
-			display: inline-flex;
-			align-items: center;
-			margin-top: 0.2rem;
-			padding: 0rem 0.5rem;
-			border-radius: 0.25rem;
-			border-color: rgb(249, 214, 214);
-			background-color: #e2e8f03f;
-			color: #4a5568;
-			font-size: 0.9rem;
-			font-weight: 500;
-			transition: background-color 0.2s ease-in-out;
-		}
+        display: inline-flex;
+        align-items: center;
+        margin-top: 0.2rem;
+        padding: 0.5rem;
+        border: none;
+        background-color: transparent;
+        color: #4f4f4f;
+        font-size: 1.2rem;
+        transition: color 0.3s ease-in-out;
+        position: relative;
+        }
 
-		.like-btn:hover {
-			background-color: #cbd5e0;
-		}
+        .liked {
+        position: relative;
+        }
 
-		.like-btn i {
-			margin-right: 0.5rem;
-		}
-
-		.like-btn .liked {
-			color: #e53e3e;
-		}
-
+    
     </style>
 
     <div class="container py-md-5 container--narrow">
@@ -99,10 +91,16 @@
             <input type="hidden" name="post_id" value="{{ $post->id }}">
             <button type="submit" class="like-btn">
                 @if ($post->isLikedByUser(Auth::id()))
-                    <i class="fas fa-heart liked"></i>&nbsp Dislike
+                    <i class="fas fa-heart liked"></i>&nbsp; Dislike
                 @else
-                    <i class="far fa-heart"></i>&nbsp Like
+                    <i class="far fa-heart"></i>&nbsp; Like
                 @endif
+
+                {{-- <i class="fas fa-heart liked">
+                        <span class="heart-shine">💖</span>
+                    </i>
+                @else
+                    <i class="far fa-heart"></i> --}}
             </button>
         </form>
 
