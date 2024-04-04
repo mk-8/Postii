@@ -71,8 +71,6 @@
             }
         }
 
-
-    
     </style>
 
     <div class="container py-md-5 container--narrow">
@@ -100,9 +98,6 @@
         @if($post->postImage && asset('storage/postImages/' . $post->postImage))
             <img class="post-image" src="{{ asset('storage/postImages/' . $post->postImage) }}" alt="Post Image" />
         @endif
-
-
-        
         
         <div class="body-content">
             {!! $post->body !!} {{-- disable the checking in order to use the markdown function--}}
