@@ -231,7 +231,7 @@ class UserController extends Controller
         $user = auth()->user();   // getting a hold of user
         $filename = $user->id . '-' . uniqid() . '.jpg';   //generating unique usernames
 
-        $imgData = \Image::make($request->file('avatar'))->fit(120)->encode('jpg');   //resize the image with intervetion/image package
+               //resize the image with intervetion/image package
         Storage::put('public/avatars/' . $filename, $imgData);   //store the image in the public folder
 
         $oldAvatar = $user->avatar;

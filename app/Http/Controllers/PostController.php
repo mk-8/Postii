@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Image;
 use App\Models\Post;
 use App\Models\Geolocation;
 use Illuminate\Support\Str;
@@ -9,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Jobs\SendNewPostEmail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Stevebauman\Location\Facades\Location;
 
 //new table for comments
@@ -32,14 +34,22 @@ class PostController extends Controller
     public function storeNewPost(Request $request){
         $incomingFields = $request->validate([
             'title' => 'required',
-            'body' => 'required'
+            'body' => 'required',
+            'postImage' => 'image|max:10000' //max-size allowed is 10MB
         ]);
-        
+
+        $user = auth()->user();
+        $filename = $user->id . '-' . uniqid() . '.jpg';
+        $imgData = \Image::make($request->file('post-image'))->encode('jpg'); 
+        Storage::put('public/postImages/' . $filename, $imgData->encode());
+
         $incomingFields['title'] = strip_tags($incomingFields['title']);
         $incomingFields['body'] = strip_tags($incomingFields['body']);
         $incomingFields['user_id'] = auth()->id();
+        $incomingFields['postImage'] = $filename;
 
         $newPost = Post::create($incomingFields);
+
 
         
         // $ip = request()->ip();
@@ -113,31 +123,31 @@ class PostController extends Controller
         return $posts;
     }
 
-    public function showPosts(Request $request) {
-        $user = auth()->user();
-        $userLat = $user->latitude;
-        $userLong = $user->longitude;
+    // public function showPosts(Request $request) {
+    //     $user = auth()->user();
+    //     $userLat = $user->latitude;
+    //     $userLong = $user->longitude;
 
-        // Retrieve latest posts from users the current user follows
-        $followingPosts = $user->followings()->with('posts')->latest()->get()->pluck('posts')->flatten();
+    //     // Retrieve latest posts from users the current user follows
+    //     $followingPosts = $user->followings()->with('posts')->latest()->get()->pluck('posts')->flatten();
 
-        // Retrieve posts from users within 300km whom the current user doesn't follow
-        $postsWithin300km = Post::whereNotIn('user_id', function($query) use ($user, $userLat, $userLong) {
-            $query->select('users.id')
-                ->from('users')
-                ->join('geolocations', 'users.id', '=', 'geolocations.user_id')
-                ->selectRaw('(6371 * acos(cos(radians(?)) * cos(radians(users.latitude)) * cos(radians(users.longitude) - radians(?)) + sin(radians(?)) * sin(radians(users.latitude)))) AS distance', [$userLat, $userLong, $userLat])
-                ->where('distance', '<', 300)
-                ->whereNotIn('users.id', function($innerQuery) use ($user) {
-                    $innerQuery->select('followeduser')
-                        ->from('follows')
-                        ->where('user_id', $user->id);
-                });
-        })
-        ->get();
+    //     // Retrieve posts from users within 300km whom the current user doesn't follow
+    //     // $postsWithin300km = Post::whereNotIn('user_id', function($query) use ($user, $userLat, $userLong) {
+    //     //     $query->select('users.id')
+    //     //         ->from('users')
+    //     //         ->join('geolocations', 'users.id', '=', 'geolocations.user_id')
+    //     //         ->selectRaw('(6371 * acos(cos(radians(?)) * cos(radians(users.latitude)) * cos(radians(users.longitude) - radians(?)) + sin(radians(?)) * sin(radians(users.latitude)))) AS distance', [$userLat, $userLong, $userLat])
+    //     //         ->where('distance', '<', 300)
+    //     //         ->whereNotIn('users.id', function($innerQuery) use ($user) {
+    //     //             $innerQuery->select('followeduser')
+    //     //                 ->from('follows')
+    //     //                 ->where('user_id', $user->id);
+    //     //         });
+    //     // })
+    //     // ->get();
 
-        return view('posts.index', compact('followingPosts', 'postsWithin300km'));
-    }
+    //     return view('posts.index', compact('followingPosts'));
+    // }
 
     public function storeNewPostApi(Request $request){
         $incomingFields = $request->validate([

@@ -43,18 +43,34 @@
         display: inline-flex;
         align-items: center;
         margin-top: 0.2rem;
-        padding: 0.5rem;
+        padding: 0.4rem;
         border: none;
         background-color: transparent;
         color: #4f4f4f;
-        font-size: 1.2rem;
+        font-size: 1rem;
         transition: color 0.3s ease-in-out;
+        position: relative;
+        box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;        }
+
+        .liked {    
         position: relative;
         }
 
-        .liked {
-        position: relative;
+        /* For desktop screens */
+
+
+        .post-image {
+            max-width: 100%; 
+            max-height: 100%; 
         }
+
+        @media only screen and (max-width: 768px) {
+            .post-image {
+                max-width: 100%;
+                max-height: none;
+            }
+        }
+
 
     
     </style>
@@ -80,6 +96,13 @@
             <a href="/profile/{{$post->user->username}}"><img class="avatar-tiny" src="{{$post->user->avatar}}" /></a>
             Posted by <a href="/profile/{{$post->user->username}}">{{$post->user->username}}</a> on {{$post->created_at->format('j/n/Y')}}
         </p>
+
+        @if($post->postImage && asset('storage/postImages/' . $post->postImage))
+            <img class="post-image" src="{{ asset('storage/postImages/' . $post->postImage) }}" alt="Post Image" />
+        @endif
+
+
+        
         
         <div class="body-content">
             {!! $post->body !!} {{-- disable the checking in order to use the markdown function--}}
@@ -95,12 +118,6 @@
                 @else
                     <i class="far fa-heart"></i>&nbsp; Like
                 @endif
-
-                {{-- <i class="fas fa-heart liked">
-                        <span class="heart-shine">💖</span>
-                    </i>
-                @else
-                    <i class="far fa-heart"></i> --}}
             </button>
         </form>
 
