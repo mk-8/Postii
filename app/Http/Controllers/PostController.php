@@ -39,15 +39,16 @@ class PostController extends Controller
         ]);
 
         $user = auth()->user();
-        $filename = $user->id . '-' . uniqid() . '.jpg';
-        $imgData = \Image::make($request->file('post-image'))->encode('jpg'); 
-        Storage::put('public/postImages/' . $filename, $imgData->encode());
+        if ($request->hasFile('post-image')) {
+            $filename = $user->id . '-' . uniqid() . '.jpg';
+            $imgData = \Image::make($request->file('post-image'))->encode('jpg');
+            Storage::put('public/postImages/' . $filename, $imgData->encode());
+            $incomingFields['postImage'] = $filename;
+        }
 
         $incomingFields['title'] = strip_tags($incomingFields['title']);
         $incomingFields['body'] = strip_tags($incomingFields['body']);
         $incomingFields['user_id'] = auth()->id();
-        $incomingFields['postImage'] = $filename;
-
         $newPost = Post::create($incomingFields);
 
 
