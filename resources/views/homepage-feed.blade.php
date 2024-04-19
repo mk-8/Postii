@@ -1,106 +1,8 @@
 <x-layout>
-	<style>
-		.like-section {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-
-.like-count {
-    margin-top: 0.2rem;
-    font-size: 0.9rem;
-    color: #666;
-    margin-right: 1rem;
-}
-
-.like-btn {
-    display: inline-flex;
-    align-items: center;
-    margin-top: 0.2rem;
-    padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
-    border: none;
-    background-color: #f0f2f5;
-    color: #4a5568;
-    font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-}
-
-.like-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.like-btn i {
-    margin-right: 0.5rem;
-}
-
-.like-btn .liked {
-    color: #e53e3e;
-}
-
-	</style>
 
 	<script>
         window.csrfToken = '{{ csrf_token() }}';
     </script>
-
-{{-- ----------------------------------------------------------------------- --}}
-
-     {{-- <div class="container py-md-5 container--narrow">
-
-      @unless ($posts->isEmpty())
-        <h2 class= "text-center mb-4">The latest from those you follow</h2>
-        <div class="list-group">
-          @foreach ($posts as $post) 
-            <div>   
-            <a href="/post/{{$post->id}}" class="list-group-item list-group-item-action">
-            <img class="avatar-tiny" src="{{$post->user->avatar}}" />
-            <strong>{{$post->title}}</strong> 
-            <span class= "text-muted"> 
-              @if (!isset($hideAuthor))
-              by {{$post->user->username}}
-              @endif
-              on {{$post->created_at->format('j/n/Y')}}
-            </span>
-            </a>
-
-			<div class="like-section">
-				<span class="like-count">Likes: {{ session('likeCount') ?? $post->likes()->count() }}</span>
-				<form action="/like" method="POST">
-					@csrf
-					<input type="hidden" name="post_id" value="{{ $post->id }}">
-					<button type="submit" class="like-btn">
-						@if ($post->isLikedByUser(Auth::id()))
-							<i class="fas fa-heart liked"></i>&nbsp Dislike
-						@else
-							<i class="far fa-heart"></i>&nbsp Like
-						@endif
-					</button>
-				</form>
-			</div>
-
-            </div>
-          @endforeach
-        </div>
-
-        <div class="mt-4">
-        {{$posts->links()}}
-        </div>
-
-      @else
-            <div class="text-center"> 
-              <h2>Hello <strong>{{auth()->user()->username}}</strong>, your feed is empty.</h2>
-              <p class="lead text-muted">Your feed displays the latest posts from the people you follow. If you don&rsquo;t have any friends to follow that&rsquo;s okay; you can use the &ldquo;Search&rdquo; feature in the top menu bar to find content written by people with similar interests and then follow them.</p>
-            </div>
-
-      @endunless
-      
-    </div> --}}
- 
-    {{-- ----------------------------------------------------------------------- --}}
 
 
 {{--  New --}}
@@ -125,20 +27,6 @@
                         <span class="like-count">Likes: {{ session('likeCount') ?? $post->likes()->count() }}</span>
                         <span class="like-count">Comments: {{ session('likeCount') ?? $post->comments()->count() }}</span>
                     </div>
-                    {{-- <form action="/like" method="POST">
-                        @csrf
-                        <input type="hidden" name="post_id" value="{{ $post->id }}">
-                        <button type="submit" class="like-btn">
-                            @if ($post->isLikedByUser(Auth::id()))
-                                <i class="fas fa-heart liked"></i>&nbsp Dislike
-                            @else
-                                <i class="far fa-heart"></i>&nbsp Like
-                            @endif
-                        </button>
-                    </form> --}}
-                    
-                    
-
                 </div>
             @endforeach
         </div>

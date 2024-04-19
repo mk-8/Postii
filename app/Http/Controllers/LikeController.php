@@ -8,52 +8,50 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class LikeController extends Controller{
-    
-   
-    public function like(Request $request)
-    {
-    $postId = $request->input('post_id');
+	
+	public function like(Request $request){
 
-    // Validate the post_id input
-    if (!$postId) {
-        return redirect()->back()->with('error', 'Invalid post ID');
-    }
+		$postId = $request->input('post_id');
 
-    $post = Post::findOrFail($postId);
+		// Validate the post_id input
+		if (!$postId) {
+			return redirect()->back()->with('error', 'Invalid post ID');
+		}
 
-    // Check if the user has already liked the post
-    $existingLike = Like::where('user_id', Auth::id())
-        ->where('post_id', $postId)
-        ->first();
+		$post = Post::findOrFail($postId);
 
-    if ($existingLike) {
-        // User has already liked the post, so remove the like
-        $existingLike->delete();
+		// Check if the user has already liked the post
+		$existingLike = Like::where('user_id', Auth::id())
+			->where('post_id', $postId)
+			->first();
 
-        // Optionally, you can update the like count on the page using Blade
-        $likeCount = Like::where('post_id', $postId)->count();
+		if ($existingLike) {
+			// User has already liked the post, so remove the like
+			$existingLike->delete();
 
-        return redirect()->back()->with('message', 'Post disliked successfully!')->with('likeCount', $likeCount);
-    } else {
-        // Create a new like record
-        $like = new Like([
-            'user_id' => Auth::id(),
-            'post_id' => $postId,
-        ]);
+			// Optionally, you can update the like count on the page using Blade
+			$likeCount = Like::where('post_id', $postId)->count();
 
-        $like->save();
+			return redirect()->back()->with('message', 'Post disliked successfully!')->with('likeCount', $likeCount);
+		} else {
+			// Create a new like record
+			$like = new Like([
+				'user_id' => Auth::id(),
+				'post_id' => $postId,
+			]);
 
-        // Optionally, you can update the like count on the page using Blade
-        $likeCount = Like::where('post_id', $postId)->count();
+			$like->save();
 
-        return redirect()->back()->with('message', 'Post liked successfully!')->with('likeCount', $likeCount);
-    }
+			// Optionally, you can update the like count on the page using Blade
+			$likeCount = Like::where('post_id', $postId)->count();
+
+			return redirect()->back()->with('message', 'Post liked successfully!')->with('likeCount', $likeCount);
+		}
 }
 
-    public function getLikeCount($postId)
-    {
-        $likeCount = Like::where('post_id', $postId)->count();
-        return (string) $likeCount;
-    }
+	public function getLikeCount($postId){
+		$likeCount = Like::where('post_id', $postId)->count();
+		return (string) $likeCount;
+	}
 
 }

@@ -1,7 +1,12 @@
 <x-layout>
     <div class="container py-md-5 container--narrow">
         <form action="/post/{{$post->id}}" method="POST">
-            <p><small><strong><a href="/post/{{$post->id}}">&laquo; Back to post</a></strong></small></p>
+            {{-- <p><small><strong><a href="/post/{{$post->id}}">&laquo; Back to post</a></strong></small></p> --}}
+             <div class="mb-3">
+                <a href="javascript:location.href = '/post/{{$post->id}}'" class="btn btn-dark btn-sm">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
             @csrf
             @method('PUT')
             <div class="form-group">

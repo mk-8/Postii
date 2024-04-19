@@ -29,8 +29,9 @@ Route::get('/', [UserController::class, 'showCorrectHomepage'])->name('login'); 
 Route::post('/register',[UserController::class, 'register'])->middleware('guest');
 Route::post('/login',[UserController::class, 'login'])->middleware('guest');
 Route::post('/logout',[UserController::class, 'logout'])->middleware('auth');
-Route::get('/manage-avatar', [UserController::class, 'showAvatarForm'])->middleware('auth');
-Route::post('/manage-avatar', [UserController::class, 'storeAvatar'])->middleware('auth');
+Route::get('/manage-info', [UserController::class, 'showInfoForm'])->middleware('auth');
+Route::post('/manage-info', [UserController::class, 'storeInfo'])->middleware('auth');
+
 
 //Follow related routed
 Route::post('/create-follow/{user:username}', [FollowController::class, 'createFollow'])->middleware('auth');

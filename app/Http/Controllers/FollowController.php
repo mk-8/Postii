@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class FollowController extends Controller
 {
+    
     public function createFollow(User $user){
         //cannot follow yourself
         if ($user->id == auth()->user()->id){

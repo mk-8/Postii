@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CommentController extends Controller
 {
+    
     public function addComment(Request $request){
         $incomingFields = $request->validate([     //perform validation on all the data coming from the form
             'content' => ['required']
