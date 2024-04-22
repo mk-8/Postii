@@ -78,10 +78,11 @@ class UserController extends Controller
 		return redirect('/')->with('success','You have successfully logged out.');
 	}
 
-	public function showCorrectHomepage() {
+	public function showCorrectHomepage(Request $request) {
 		if (Auth::check()) {
 			$user = Auth::user();
-
+			
+			$selectedCategory = $request->input('category');
 			// Retrieve latest posts from users the current user follows
 			$followingPosts = $user->feedPosts()->latest()->paginate(8);
 
@@ -113,9 +114,19 @@ class UserController extends Controller
 			->where('user_id', '!=', auth()->id())
 			->get();
 
+			 $categoryPosts = collect();
 
-			return view('homepage-feed', compact('followingPosts', 'postsWithin300km', 'postsGreater2000km'));
-		} else {
+
+			if ($selectedCategory) {
+				$categoryPosts = Post::where('category', $selectedCategory)->get();
+			} else {
+				$categoryPosts = collect(); // Empty collection if no category is selected
+			}
+
+			return view('homepage-feed', compact('followingPosts', 'postsWithin300km', 'postsGreater2000km', 'categoryPosts','selectedCategory'));
+		} 
+		
+		else {
 			$postCount = Cache::remember('postCount', 20, function () {
 				sleep(5);
 				return Post::count();

@@ -4,6 +4,12 @@
         window.csrfToken = '{{ csrf_token() }}';
     </script>
 
+    <style>
+        .category.selected {
+                background-color: #007bff;
+        }
+    </style>
+
 
 {{--  New --}}
 
@@ -88,17 +94,57 @@
         </div>
     @endunless
 
+    
+    <h2 class="text-center mb-4">Browse by category
+    </h2>
+    <form id="categoryForm" action="/" method="get">
+        <div class="category-container">
+                <span class="category" data-category="cars">Cars</span>
+                <span class="category" data-category="movies">Movies</span>
+                <span class="category" data-category="music">Music</span>
+                <span class="category" data-category="hike">Hike</span>
+                <span class="category" data-category="cafe">Cafe</span>
+                <span class="category" data-category="country">Country</span>
+                <span class="category" data-category="accessories">Accessories</span>
+                <span class="category" data-category="clothing">Clothing</span>
+                <span class="category" data-category="dance">Dance</span>
+                <span class="category" data-category="food">Food</span>
+                <span class="category" data-category="footwear">Footwear</span>
+                <span class="category" data-category="headwear">Headwear</span>
+                <span class="category" data-category="electronics">Electronics</span>
+        </div>
+    </form>
+    <div class="post-field">
+    <!-- Check if categoryPosts is empty -->
+        @if ($categoryPosts->isEmpty())
+            <p>No posts found for the selected category.</p>
+        @else
+            <!-- Display the fetched posts here -->
+            @foreach ($categoryPosts as $post)
+                <div>   
+                    <a href="/post/{{$post->id}}" class="list-group-item list-group-item-action">
+                        <img class="avatar-tiny" src="{{$post->user->avatar}}" />
+                        <strong>{{$post->title}}</strong> 
+                        <span class="text-muted"> 
+                            by {{$post->user->username}}
+                            on {{$post->created_at->format('j/n/Y')}}
+                        </span>
+                    </a>
+                    <!-- Like button section -->
+                    <div class="like-section">
+                        <span class="like-count">Likes: {{ session('likeCount') ?? $post->likes()->count() }}</span>
+                        <span class="like-count">Comments: {{ session('likeCount') ?? $post->comments()->count() }}</span>
+                    </div>
+                </div>
+            @endforeach
+        @endif
+    </div>
+
+
 </div>
 
 
 {{-- End New --}}
-
-
-
-
-
-
-
 
 
     <script>
@@ -138,6 +184,51 @@
             });
         });
     });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const categorySpans = document.querySelectorAll('.category');
+
+        // Retrieve the selected category from localStorage, if it exists
+        const selectedCategory = localStorage.getItem('selectedCategory');
+
+        // Add the 'selected' class to the selected category span
+        if (selectedCategory) {
+            const selectedSpan = document.querySelector(`.category[data-category="${selectedCategory}"]`);
+            if (selectedSpan) {
+                selectedSpan.classList.add('selected');
+            }
+        }
+
+        categorySpans.forEach(span => {
+            span.addEventListener('click', function (event) {
+                event.preventDefault(); // Prevent the default behavior of the click event
+                
+                const category = this.getAttribute('data-category');
+                
+                // Check if the clicked category is already selected
+                const isSelected = this.classList.contains('selected');
+                
+                // If the clicked category is already selected, remove the 'selected' class
+                if (isSelected) {
+                    this.classList.remove('selected');
+                    localStorage.removeItem('selectedCategory'); // Remove the selected category from localStorage
+                } else {
+                    // Otherwise, remove the 'selected' class from all category spans
+                    categorySpans.forEach(span => {
+                        span.classList.remove('selected');
+                    });
+
+                    // Add the 'selected' class to the clicked category span
+                    this.classList.add('selected');
+                    localStorage.setItem('selectedCategory', category); // Store the selected category in localStorage
+                }
+
+                const url = `/?category=${category}`;
+                window.location.href = url; // Navigate to the constructed URL
+            });
+        });
+    });
+
 </script>
 
 

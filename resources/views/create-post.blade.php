@@ -17,15 +17,15 @@
 				<span class="category" data-category="movies">Movies</span>
 				<span class="category" data-category="music">Music</span>
 				<span class="category" data-category="hike">Hike</span>
-				<span class="category" data-category="restaurant">Cafe</span>
-				<span class="category" data-category="restaurant">Country</span>
-				<span class="category" data-category="restaurant">Accessories</span>
-				<span class="category" data-category="restaurant">Clothing</span>
-				<span class="category" data-category="restaurant">Dance</span>
-				<span class="category" data-category="restaurant">Food</span>
-				<span class="category" data-category="restaurant">Footwear</span>
-				<span class="category" data-category="restaurant">Headwear</span>
-				<span class="category" data-category="restaurant">Electronics</span>
+				<span class="category" data-category="cafe">Cafe</span>
+				<span class="category" data-category="country">Country</span>
+				<span class="category" data-category="accessories">Accessories</span>
+				<span class="category" data-category="clothing">Clothing</span>
+				<span class="category" data-category="dance">Dance</span>
+				<span class="category" data-category="food">Food</span>
+				<span class="category" data-category="footwear">Footwear</span>
+				<span class="category" data-category="headwear">Headwear</span>
+				<span class="category" data-category="electronics">Electronics</span>
 
 				<!-- Add more spans for other categories -->
 			</div>
