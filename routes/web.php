@@ -31,6 +31,8 @@ Route::post('/login',[UserController::class, 'login'])->middleware('guest');
 Route::post('/logout',[UserController::class, 'logout'])->middleware('auth');
 Route::get('/manage-info', [UserController::class, 'showInfoForm'])->middleware('auth');
 Route::post('/manage-info', [UserController::class, 'storeInfo'])->middleware('auth');
+Route::get('/update-info', [UserController::class, 'showUpdateInfoForm'])->middleware('auth');
+Route::put('/update-info', [UserController::class, 'UpdateInfo'])->middleware('auth');
 
 
 //Follow related routed

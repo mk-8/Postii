@@ -39,9 +39,10 @@
         <a href="javascript:location.href= '/profile/{{$userData->username}}'" class="btn btn-dark btn-sm">
 			<i class="fas fa-arrow-left"></i> Back
 		</a>
-        <h2 class="text-center mb-3">Manage Your Information</h2>
-        <form action="/manage-info" method="post" enctype="multipart/form-data">
+        <h2 class="text-center mb-3">Update Your Information</h2>
+        <form action="/update-info" method="post" enctype="multipart/form-data">
             @csrf
+            @method('PUT')
             <div class="mb-3">
                 <label for="avatar" class="form-label">Avatar:</label>
                 <input type="file" class="form-control p-1" id="avatar" name="avatar" @if(!$userData->avatar) required @endif onchange="displayImage(this)">
@@ -338,8 +339,7 @@
                 <label for="city" class="form-label">City:</label>
                 <input type="text" class="form-control" id="city" name="city" value="{{ $userData->City ?? '' }}" required>
             </div>
-            <button class="btn btn-primary">Save</button>
-            <a href="/update-info" class="ml-3">Update Information?</a>
+            <button class="btn btn-primary">Update</button>
     </form>
 
     </div>

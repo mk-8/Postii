@@ -188,6 +188,13 @@ class UserController extends Controller
 		]);
 	}
 
+	public function showUpdateInfoForm(){
+		$user = auth()->user();
+		return view('update-info', [
+			'userData' => $user
+		]);
+	}
+
 	public function storeInfo(Request $request){
 		$request->validate([
 			'avatar' => 'required|image|max:10000', // Max size allowed is 10MB
@@ -220,7 +227,46 @@ class UserController extends Controller
 		$user->state = $request->input('state');
 		$user->city = $request->input('city');
 		$user->profession = $request->input('profession');
-		$user->save();
+		$user->update();
+
+		return back()->with('success', 'Information added successfully!');
+	}
+
+	
+	public function UpdateInfo(Request $request){
+		$request->validate([
+			'avatar' => 'nullable|image|max:10000', // Max size allowed is 10MB
+			'dob' => 'required|date',
+			'university' => 'required|string',
+			'country' => 'required|string',
+			'state' => 'required|string',
+			'city' => 'required|string',
+			'profession' => 'required|string'
+		]);
+
+		$user = auth()->user(); // Getting the authenticated user
+
+		// Handle avatar upload
+		if ($request->hasFile('avatar')) {
+			$avatar = $request->file('avatar');
+			$filename = $user->id . '-' . uniqid() . '.' . $avatar->getClientOriginalExtension();
+			Storage::putFileAs('public/avatars', $avatar, $filename);
+			$oldAvatar = $user->avatar;
+			$user->avatar = $filename;
+			if ($oldAvatar != "avatars/fallback-avatar.jpg") {
+				Storage::delete('public/' . $oldAvatar);
+			}
+		}
+
+		// Update other user information
+		$user->dob = $request->input('dob');
+		$user->university = $request->input('university');
+		$user->country = $request->input('country');
+		$user->state = $request->input('state');
+		$user->city = $request->input('city');
+		$user->profession = $request->input('profession');
+
+		$user->save(); // Save the changes
 
 		return back()->with('success', 'Information updated successfully!');
 	}

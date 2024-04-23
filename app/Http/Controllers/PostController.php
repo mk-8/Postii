@@ -114,31 +114,7 @@ class PostController extends Controller
 		return $posts;
 	}
 
-	// public function showPosts(Request $request) {
-	//     $user = auth()->user();
-	//     $userLat = $user->latitude;
-	//     $userLong = $user->longitude;
-
-	//     // Retrieve latest posts from users the current user follows
-	//     $followingPosts = $user->followings()->with('posts')->latest()->get()->pluck('posts')->flatten();
-
-	//     // Retrieve posts from users within 300km whom the current user doesn't follow
-	//     // $postsWithin300km = Post::whereNotIn('user_id', function($query) use ($user, $userLat, $userLong) {
-	//     //     $query->select('users.id')
-	//     //         ->from('users')
-	//     //         ->join('geolocations', 'users.id', '=', 'geolocations.user_id')
-	//     //         ->selectRaw('(6371 * acos(cos(radians(?)) * cos(radians(users.latitude)) * cos(radians(users.longitude) - radians(?)) + sin(radians(?)) * sin(radians(users.latitude)))) AS distance', [$userLat, $userLong, $userLat])
-	//     //         ->where('distance', '<', 300)
-	//     //         ->whereNotIn('users.id', function($innerQuery) use ($user) {
-	//     //             $innerQuery->select('followeduser')
-	//     //                 ->from('follows')
-	//     //                 ->where('user_id', $user->id);
-	//     //         });
-	//     // })
-	//     // ->get();
-
-	//     return view('posts.index', compact('followingPosts'));
-	// }
+	
 
 	public function storeNewPostApi(Request $request){
 		$incomingFields = $request->validate([
